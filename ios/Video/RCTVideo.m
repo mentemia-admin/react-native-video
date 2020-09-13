@@ -775,7 +775,7 @@ static int const RCTVideoUnset = -1;
         return;
       }
   }
-}
+
 
 - (void)attachListeners
 {
