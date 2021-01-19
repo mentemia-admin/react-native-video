@@ -54,6 +54,7 @@ static int const RCTVideoUnset = -1;
   float _rate;
   float _maxBitRate;
 
+  BOOL _automaticallyWaitsToMinimizeStalling;
   BOOL _muted;
   BOOL _paused;
   BOOL _repeat;
@@ -87,7 +88,7 @@ static int const RCTVideoUnset = -1;
 {
   if ((self = [super init])) {
     _eventDispatcher = eventDispatcher;
-
+	  _automaticallyWaitsToMinimizeStalling = YES;
     _playbackRateObserverRegistered = NO;
     _isExternalPlaybackActiveObserverRegistered = NO;
     _playbackStalled = NO;
@@ -376,6 +377,9 @@ static int const RCTVideoUnset = -1;
       _isExternalPlaybackActiveObserverRegistered = YES;
 
       [self addPlayerTimeObserver];
+      if (@available(iOS 10.0, *)) {
+        [self setAutomaticallyWaitsToMinimizeStalling:_automaticallyWaitsToMinimizeStalling];
+      }
 
       //Perform on next run loop, otherwise onVideoLoadStart is nil
       if (self.onVideoLoadStart) {
@@ -550,7 +554,7 @@ static int const RCTVideoUnset = -1;
 
         DVURLAsset *asset = [[DVURLAsset alloc] initWithURL:url options:options networkTimeout:10000];
         asset.loaderDelegate = self;
-        
+
         /* More granular code to have control over the DVURLAsset
         DVAssetLoaderDelegate *resourceLoaderDelegate = [[DVAssetLoaderDelegate alloc] initWithURL:url];
         resourceLoaderDelegate.delegate = self;
@@ -884,8 +888,12 @@ static int const RCTVideoUnset = -1;
     [_player pause];
     [_player setRate:0.0];
   } else {
-    [_player play];
-    [_player setRate:_rate];
+     if (@available(iOS 10.0, *) && !_automaticallyWaitsToMinimizeStalling) {
+         [_player playImmediatelyAtRate:_rate];
+       } else {
+         [_player play];
+         [_player setRate:_rate];
+       }
   }
 
   _paused = paused;
@@ -969,6 +977,12 @@ static int const RCTVideoUnset = -1;
 - (void)setMaxBitRate:(float) maxBitRate {
   _maxBitRate = maxBitRate;
   _playerItem.preferredPeakBitRate = maxBitRate;
+}
+
+- (void)setAutomaticallyWaitsToMinimizeStalling:(BOOL)waits
+{
+	_automaticallyWaitsToMinimizeStalling = waits;
+	_player.automaticallyWaitsToMinimizeStalling = waits;
 }
 
 
@@ -1385,6 +1399,11 @@ static int const RCTVideoUnset = -1;
 {
   if (_playerViewController == playerViewController && _fullscreenPlayerPresented && self.onVideoFullscreenPlayerWillDismiss)
   {
+    @try{
+      [_playerViewController.contentOverlayView removeObserver:self forKeyPath:@"frame"];
+      [_playerViewController removeObserver:self forKeyPath:readyForDisplayKeyPath];
+    }@catch(id anException){
+    }
     self.onVideoFullscreenPlayerWillDismiss(@{@"target": self.reactTag});
   }
 }
