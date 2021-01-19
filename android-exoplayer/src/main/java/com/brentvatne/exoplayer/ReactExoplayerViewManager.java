@@ -44,6 +44,7 @@ public class ReactExoplayerViewManager extends ViewGroupManager<ReactExoplayerVi
     private static final String PROP_BUFFER_CONFIG_MAX_BUFFER_MS = "maxBufferMs";
     private static final String PROP_BUFFER_CONFIG_BUFFER_FOR_PLAYBACK_MS = "bufferForPlaybackMs";
     private static final String PROP_BUFFER_CONFIG_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS = "bufferForPlaybackAfterRebufferMs";
+    private static final String PROP_PREVENTS_DISPLAY_SLEEP_DURING_VIDEO_PLAYBACK = "preventsDisplaySleepDuringVideoPlayback";
     private static final String PROP_PROGRESS_UPDATE_INTERVAL = "progressUpdateInterval";
     private static final String PROP_REPORT_BANDWIDTH = "reportBandwidth";
     private static final String PROP_SEEK = "seek";
@@ -53,12 +54,19 @@ public class ReactExoplayerViewManager extends ViewGroupManager<ReactExoplayerVi
     private static final String PROP_PLAY_IN_BACKGROUND = "playInBackground";
     private static final String PROP_DISABLE_FOCUS = "disableFocus";
     private static final String PROP_FULLSCREEN = "fullscreen";
+    private static final String PROP_FULLSCREEN_ORIENTATION = "fullscreenOrientation";
     private static final String PROP_USE_TEXTURE_VIEW = "useTextureView";
     private static final String PROP_SELECTED_VIDEO_TRACK = "selectedVideoTrack";
     private static final String PROP_SELECTED_VIDEO_TRACK_TYPE = "type";
     private static final String PROP_SELECTED_VIDEO_TRACK_VALUE = "value";
     private static final String PROP_HIDE_SHUTTER_VIEW = "hideShutterView";
     private static final String PROP_CONTROLS = "controls";
+
+    private ReactExoplayerConfig config;
+
+    public ReactExoplayerViewManager(ReactExoplayerConfig config) {
+        this.config = config;
+    }
 
     @Override
     public String getName() {
@@ -67,7 +75,7 @@ public class ReactExoplayerViewManager extends ViewGroupManager<ReactExoplayerVi
 
     @Override
     protected ReactExoplayerView createViewInstance(ThemedReactContext themedReactContext) {
-        return new ReactExoplayerView(themedReactContext);
+        return new ReactExoplayerView(themedReactContext, config);
     }
 
     @Override
@@ -142,6 +150,11 @@ public class ReactExoplayerViewManager extends ViewGroupManager<ReactExoplayerVi
     @ReactProp(name = PROP_REPEAT, defaultBoolean = false)
     public void setRepeat(final ReactExoplayerView videoView, final boolean repeat) {
         videoView.setRepeatModifier(repeat);
+    }
+
+    @ReactProp(name = PROP_PREVENTS_DISPLAY_SLEEP_DURING_VIDEO_PLAYBACK, defaultBoolean = false)
+    public void setPreventsDisplaySleepDuringVideoPlayback(final ReactExoplayerView videoView, final boolean preventsSleep) {
+        videoView.setPreventsDisplaySleepDuringVideoPlayback(preventsSleep);
     }
 
     @ReactProp(name = PROP_SELECTED_VIDEO_TRACK)
@@ -250,6 +263,11 @@ public class ReactExoplayerViewManager extends ViewGroupManager<ReactExoplayerVi
     @ReactProp(name = PROP_FULLSCREEN, defaultBoolean = false)
     public void setFullscreen(final ReactExoplayerView videoView, final boolean fullscreen) {
         videoView.setFullscreen(fullscreen);
+    }
+
+    @ReactProp(name = PROP_FULLSCREEN_ORIENTATION)
+    public void setFullscreenOrientation(final ReactExoplayerView videoView, final String fullscreenOrientation) {
+        videoView.setFullscreenOrientation(fullscreenOrientation);
     }
 
     @ReactProp(name = PROP_USE_TEXTURE_VIEW, defaultBoolean = true)
