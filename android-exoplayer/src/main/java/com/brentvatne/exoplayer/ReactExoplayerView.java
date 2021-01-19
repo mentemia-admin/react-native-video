@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.accessibility.CaptioningManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.brentvatne.react.R;
 import com.brentvatne.receiver.AudioBecomingNoisyReceiver;
@@ -131,6 +132,8 @@ class ReactExoplayerView extends FrameLayout implements
     private int bufferForPlaybackMs = DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS;
     private int bufferForPlaybackAfterRebufferMs = DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS;
 
+
+
     // Props from React
     private Uri srcUri;
     private String extension;
@@ -175,10 +178,10 @@ class ReactExoplayerView extends FrameLayout implements
             }
         }
     };
-    
+
     public double getPositionInFirstPeriodMsForCurrentWindow(long currentPosition) {
         Timeline.Window window = new Timeline.Window();
-        if(!player.getCurrentTimeline().isEmpty()) {    
+        if(!player.getCurrentTimeline().isEmpty()) {
             player.getCurrentTimeline().getWindow(player.getCurrentWindowIndex(), window);
         }
         return window.windowStartTimeMs + currentPosition;
@@ -351,6 +354,14 @@ class ReactExoplayerView extends FrameLayout implements
         playPauseControlContainer = playerControlView.findViewById(R.id.exo_play_pause_container);
         playerControlView.findViewById(R.id.exo_fullscreen_button).setOnClickListener(v -> setFullscreen(true));
 
+        initSubtitleView();
+        playerControlView.findViewById(R.id.mute_btn).setOnClickListener(v -> {
+            toggleMute();
+        });
+        playerControlView.findViewById(R.id.subtitle_btn).setOnClickListener(v -> {
+            toggleSubtitles();
+        });
+
         // Invoking onClick event for exoplayerView
         exoPlayerView.setOnClickListener(new OnClickListener() {
             @Override
@@ -390,6 +401,7 @@ class ReactExoplayerView extends FrameLayout implements
             }
         };
         player.addListener(eventListener);
+
     }
 
     /**
@@ -405,7 +417,7 @@ class ReactExoplayerView extends FrameLayout implements
         if (indexOfPC != -1) {
             removeViewAt(indexOfPC);
         }
-        addView(playerControlView, 1, layoutParams);
+        addView(playerControlView);
     }
 
     /**
@@ -484,6 +496,8 @@ class ReactExoplayerView extends FrameLayout implements
                     eventEmitter.loadStart();
                     loadVideoStarted = true;
                 }
+
+
 
                 // Initializing the playerControlView
                 initializePlayerControl();
@@ -1213,6 +1227,7 @@ class ReactExoplayerView extends FrameLayout implements
     }
 
 
+
     public void setVolumeModifier(float volume) {
         audioVolume = volume;
         if (player != null) {
@@ -1318,4 +1333,55 @@ class ReactExoplayerView extends FrameLayout implements
     public interface FullScreenDelegate {
         void closeFullScreen();
     }
+
+
+    /***
+     *
+     *
+     * Mentemia specific code to handle additional controls
+     *
+     *
+     *
+     */
+
+    private boolean showSubtitles = false;
+    public boolean hasTextTracks()
+    {
+        return textTracks != null && textTracks.size() > 0;
+    }
+    public boolean getMutedState()
+    {
+        return this.muted;
+    }
+    public boolean getSubtitleState() {return showSubtitles;}
+
+
+    public void initSubtitleView()
+    {
+        MentemiaControls.setSubtitleControl(playerControlView,hasTextTracks());
+    }
+
+
+    public void toggleMute()
+    {
+        this.muted = !this.muted;
+        MentemiaControls.toggleMuteControls(playerControlView,muted);
+        setMutedModifier(this.muted);
+    }
+
+    public void toggleSubtitles()
+    {
+        showSubtitles = !showSubtitles;
+        if(showSubtitles)
+        {
+            setSelectedTrack(C.TRACK_TYPE_TEXT, textTrackType, textTrackValue);
+        }
+        else
+        {
+            setSelectedTrack(C.TRACK_TYPE_TEXT, "disabled", null);
+        }
+
+        MentemiaControls.toggleSubtitleControl(playerControlView,showSubtitles);
+    }
+
 }

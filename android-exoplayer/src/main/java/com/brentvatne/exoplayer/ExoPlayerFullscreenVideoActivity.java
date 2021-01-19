@@ -2,8 +2,11 @@ package com.brentvatne.exoplayer;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,10 +19,11 @@ import com.google.android.exoplayer2.ui.PlayerControlView;
 public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implements ReactExoplayerView.FullScreenDelegate {
     public static final String EXTRA_ID = "extra_id";
     public static final String EXTRA_ORIENTATION = "extra_orientation";
-    
+
     private int id;
     private PlayerControlView playerControlView;
     private SimpleExoPlayer player;
+    private boolean muted;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,11 +42,12 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
         playerView.setPlayer(player);
         playerView.setOnClickListener(v -> togglePlayerControlVisibility());
 
+        // See if we can reuse the controls from the inline view
         playerControlView = findViewById(R.id.player_controls);
         playerControlView.setPlayer(player);
         // Set the fullscreen button to "close fullscreen" icon
         ImageView fullscreenIcon = playerControlView.findViewById(R.id.exo_fullscreen_icon);
-        fullscreenIcon.setImageResource(R.drawable.exo_controls_fullscreen_exit);
+        fullscreenIcon.setImageResource(R.drawable.fullscreen_exit);
         playerControlView.findViewById(R.id.exo_fullscreen_button)
                 .setOnClickListener(v -> ReactExoplayerView.getViewInstance(id).setFullscreen(false));
         //Handling the playButton click event
@@ -50,11 +55,15 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
             if (player != null && player.getPlaybackState() == Player.STATE_ENDED) {
                 player.seekTo(0);
             }
+
             ReactExoplayerView.getViewInstance(id).setPausedModifier(false);
         });
 
         //Handling the pauseButton click event
         playerControlView.findViewById(R.id.exo_pause).setOnClickListener(v -> ReactExoplayerView.getViewInstance(id).setPausedModifier(true));
+
+        // Mentemia specific controls
+        initMentemiaControls();
     }
 
     @Override
@@ -135,4 +144,34 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
     public void closeFullScreen() {
         finish();
     }
+
+    /***
+     *
+     *
+     * Mentemia specific code to handle additional controls
+     *
+     *
+     *
+     */
+
+    private void initMentemiaControls()
+    {
+
+
+        MentemiaControls.setSubtitleControl(playerControlView,ReactExoplayerView.getViewInstance(id).hasTextTracks());
+        MentemiaControls.toggleMuteControls(playerControlView,ReactExoplayerView.getViewInstance(id).getMutedState());
+        MentemiaControls.toggleSubtitleControl(playerControlView,ReactExoplayerView.getViewInstance(id).getSubtitleState());
+
+        playerControlView.findViewById(R.id.subtitle_btn).setOnClickListener(v -> {
+            ReactExoplayerView.getViewInstance(id).toggleSubtitles();
+            MentemiaControls.toggleSubtitleControl(playerControlView,ReactExoplayerView.getViewInstance(id).getSubtitleState());
+        });
+
+        playerControlView.findViewById(R.id.mute_btn).setOnClickListener(v -> {
+            ReactExoplayerView.getViewInstance(id).toggleMute();
+            MentemiaControls.toggleMuteControls(playerControlView,ReactExoplayerView.getViewInstance(id).getMutedState());
+        });
+    }
+
+
 }
