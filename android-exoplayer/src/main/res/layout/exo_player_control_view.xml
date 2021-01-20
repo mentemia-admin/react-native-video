@@ -63,53 +63,54 @@
     <com.google.android.exoplayer2.ui.DefaultTimeBar
             android:id="@id/exo_progress"
             android:layout_width="0dp"
-            android:layout_height="16dp"
+            android:layout_height="12dp"
 
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="4dp"
             android:layout_weight="1"
+            app:bar_height="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+
     <ImageButton
             android:id="@+id/subtitle_btn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="32dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="16dp"
             android:background="#00FFFFFF"
             android:scaleType="fitXY"
             app:layout_constraintBottom_toTopOf="@+id/exo_progress"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/subtitles" />
 
-    />
-
     <FrameLayout
             android:id="@+id/exo_fullscreen_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/subtitle_btn"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/exo_progress"
             app:layout_constraintEnd_toStartOf="@+id/subtitle_btn">
 
         <ImageView
                 android:id="@+id/exo_fullscreen_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginRight="12dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+
                 android:background="#00FFFFFF"
-                app:layout_constraintBottom_toBottomOf="@+id/subtitle_btn"
+                app:layout_constraintBottom_toTopOf="@+id/exo_progress"
                 app:layout_constraintEnd_toStartOf="@+id/subtitle_btn"
                 app:srcCompat="@drawable/fullscreen" />
     </FrameLayout>
 
     <ImageButton
             android:id="@+id/mute_btn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginRight="12dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
             android:background="#00FFFFFF"
             android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="@+id/exo_fullscreen_button"
@@ -117,16 +118,15 @@
             app:srcCompat="@drawable/unmute" />
 
 
-
     <TextView
             android:id="@+id/exo_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:textSize="14sp"
-            android:textColor="#FFFFFFFF"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
             android:text="00:00"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/mute_btn"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -136,9 +136,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
-            android:textSize="14sp"
-            android:textColor="#FFFFFFFF"
             android:text="/"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/exo_position"
             app:layout_constraintStart_toEndOf="@+id/exo_position" />
 
@@ -148,13 +148,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
-            android:textSize="14sp"
-            android:textColor="#FFFFFFFF"
             android:text="00:00"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/mute_btn"
             app:layout_constraintStart_toEndOf="@+id/time_spacer" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
