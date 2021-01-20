@@ -1358,9 +1358,9 @@ class ReactExoplayerView extends FrameLayout implements
 
     public void initSubtitleView()
     {
+        showSubtitles = hasTextTracks();
         MentemiaControls.setSubtitleControl(playerControlView,hasTextTracks());
     }
-
 
     public void toggleMute()
     {
