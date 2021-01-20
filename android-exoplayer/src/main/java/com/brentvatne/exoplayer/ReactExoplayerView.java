@@ -464,7 +464,11 @@ class ReactExoplayerView extends FrameLayout implements
                     exoPlayerView.setPlayer(player);
                     audioBecomingNoisyReceiver.setListener(self);
                     bandwidthMeter.addEventListener(new Handler(), self);
-                    setPlayWhenReady(!isPaused);
+                    /*
+                    Mentemia change
+                    This runs onHostResume and seems to cause an issue where you have to hit the play button twice
+                    */
+                    //setPlayWhenReady(!isPaused);
                     playerNeedsSource = true;
 
                     PlaybackParameters params = new PlaybackParameters(rate, 1f);
