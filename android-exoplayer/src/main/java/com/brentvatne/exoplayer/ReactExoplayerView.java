@@ -370,7 +370,11 @@ class ReactExoplayerView extends FrameLayout implements
             }
         });
 
-        //Handling the playButton click event
+           /*
+             Mentemia change
+             This causes a situation where the user sometimes has to press play twice
+           */
+/*         //Handling the playButton click event
         ImageButton playButton = playerControlView.findViewById(R.id.exo_play);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -389,7 +393,7 @@ class ReactExoplayerView extends FrameLayout implements
             public void onClick(View v) {
                 setPausedModifier(true);
             }
-        });
+        }); */
 
         // Invoking onPlayerStateChanged event for Player
         eventListener = new Player.EventListener() {
