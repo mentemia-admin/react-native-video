@@ -636,6 +636,7 @@ class ReactExoplayerView extends FrameLayout implements
         if (!disableFocus) {
             setKeepScreenOn(preventsDisplaySleepDuringVideoPlayback);
         }
+        playerControlView.setShowTimeoutMs(5000);
     }
 
     private void pausePlayback() {
@@ -644,6 +645,7 @@ class ReactExoplayerView extends FrameLayout implements
                 setPlayWhenReady(false);
             }
         }
+        playerControlView.setShowTimeoutMs(0);
         setKeepScreenOn(false);
     }
 
