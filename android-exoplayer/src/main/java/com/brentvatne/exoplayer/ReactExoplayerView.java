@@ -1349,17 +1349,11 @@ class ReactExoplayerView extends FrameLayout implements
      */
 
     private boolean showSubtitles = false;
-
-
-    public boolean hasTextTracks()
-    {
-        return textTracks != null && textTracks.size() > 0;
-    }
-    public boolean getMutedState()
-    {
-        return this.muted;
-    }
+    private Player.EventListener isPlayingEventListener;
+    public boolean hasTextTracks(){return textTracks != null && textTracks.size() > 0;}
+    public boolean getMutedState(){return this.muted;}
     public boolean getSubtitleState() {return showSubtitles;}
+    public void setIsPaused(boolean _isPaused){isPaused = _isPaused;}
 
 
     private void initMentemiaControls()
@@ -1371,6 +1365,23 @@ class ReactExoplayerView extends FrameLayout implements
         playerControlView.findViewById(R.id.subtitle_btn).setOnClickListener(v -> {
             toggleSubtitles();
         });
+
+       isPlayingEventListener = new Player.EventListener() {
+            @Override
+            public void onIsPlayingChanged(boolean isPlaying) {
+                isPaused = isPlaying;
+                if(isPlaying)
+                {
+                    playerControlView.setShowTimeoutMs(5000);
+                }
+                else
+                {
+                    playerControlView.setShowTimeoutMs(0);
+                }
+                playerControlView.show();
+            }
+        };
+        player.addListener(isPlayingEventListener);
     }
 
     public void initSubtitleView()

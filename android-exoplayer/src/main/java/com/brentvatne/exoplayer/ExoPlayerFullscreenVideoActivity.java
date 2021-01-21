@@ -24,6 +24,8 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
     private PlayerControlView playerControlView;
     private SimpleExoPlayer player;
     private boolean muted;
+    private Player.EventListener isPlayingEventListener;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,11 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
         fullscreenIcon.setImageResource(R.drawable.fullscreen_exit);
         playerControlView.findViewById(R.id.exo_fullscreen_button)
                 .setOnClickListener(v -> ReactExoplayerView.getViewInstance(id).setFullscreen(false));
-        //Handling the playButton click event
+
+      /*
+       Mentemia change - this was causing the user to have to double click play
+      */
+     /*    //Handling the playButton click event
         playerControlView.findViewById(R.id.exo_play).setOnClickListener(v -> {
             if (player != null && player.getPlaybackState() == Player.STATE_ENDED) {
                 player.seekTo(0);
@@ -60,7 +66,7 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
         });
 
         //Handling the pauseButton click event
-        playerControlView.findViewById(R.id.exo_pause).setOnClickListener(v -> ReactExoplayerView.getViewInstance(id).setPausedModifier(true));
+        playerControlView.findViewById(R.id.exo_pause).setOnClickListener(v -> ReactExoplayerView.getViewInstance(id).setPausedModifier(true)); */
 
         // Mentemia specific controls
         initMentemiaControls();
@@ -171,6 +177,23 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
             ReactExoplayerView.getViewInstance(id).toggleMute();
             MentemiaControls.toggleMuteControls(playerControlView,ReactExoplayerView.getViewInstance(id).getMutedState());
         });
+
+        isPlayingEventListener = new Player.EventListener() {
+            @Override
+            public void onIsPlayingChanged(boolean isPlaying) {
+                ReactExoplayerView.getViewInstance(id).setIsPaused(isPlaying);
+                if(isPlaying)
+                {
+                    playerControlView.setShowTimeoutMs(5000);
+                }
+                else
+                {
+                    playerControlView.setShowTimeoutMs(0);
+                }
+                playerControlView.show();
+            }
+        };
+        player.addListener(isPlayingEventListener);
     }
 
 
