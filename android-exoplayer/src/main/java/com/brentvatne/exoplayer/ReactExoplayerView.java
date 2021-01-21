@@ -354,13 +354,7 @@ class ReactExoplayerView extends FrameLayout implements
         playPauseControlContainer = playerControlView.findViewById(R.id.exo_play_pause_container);
         playerControlView.findViewById(R.id.exo_fullscreen_button).setOnClickListener(v -> setFullscreen(true));
 
-        initSubtitleView();
-        playerControlView.findViewById(R.id.mute_btn).setOnClickListener(v -> {
-            toggleMute();
-        });
-        playerControlView.findViewById(R.id.subtitle_btn).setOnClickListener(v -> {
-            toggleSubtitles();
-        });
+        initMentemiaControls();
 
         // Invoking onClick event for exoplayerView
         exoPlayerView.setOnClickListener(new OnClickListener() {
@@ -1355,6 +1349,8 @@ class ReactExoplayerView extends FrameLayout implements
      */
 
     private boolean showSubtitles = false;
+
+
     public boolean hasTextTracks()
     {
         return textTracks != null && textTracks.size() > 0;
@@ -1365,6 +1361,17 @@ class ReactExoplayerView extends FrameLayout implements
     }
     public boolean getSubtitleState() {return showSubtitles;}
 
+
+    private void initMentemiaControls()
+    {
+        initSubtitleView();
+        playerControlView.findViewById(R.id.mute_btn).setOnClickListener(v -> {
+            toggleMute();
+        });
+        playerControlView.findViewById(R.id.subtitle_btn).setOnClickListener(v -> {
+            toggleSubtitles();
+        });
+    }
 
     public void initSubtitleView()
     {
