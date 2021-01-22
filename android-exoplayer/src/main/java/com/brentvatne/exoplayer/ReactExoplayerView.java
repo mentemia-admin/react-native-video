@@ -1362,6 +1362,7 @@ class ReactExoplayerView extends FrameLayout implements
     public boolean hasTextTracks(){return textTracks != null && textTracks.size() > 0;}
     public boolean getMutedState(){return this.muted;}
     public boolean getSubtitleState() {return showSubtitles;}
+    public boolean getFullscreenState() {return isFullscreen;}
     public boolean getPausedState() {return isPaused;}
     public void setIsPaused(boolean _isPaused){isPaused = _isPaused;}
 
