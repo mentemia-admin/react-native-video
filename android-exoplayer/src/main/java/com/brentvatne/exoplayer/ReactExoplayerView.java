@@ -248,7 +248,10 @@ class ReactExoplayerView extends FrameLayout implements
             if (isInFullscreen) {
                 if (player != null) {
                     exoPlayerView.setPlayer(player);
-                    syncPlayerState();
+                    /**
+                    Mentemia change - don't sync for the fullscreen. It causes play/pause flickering
+                    **/
+                    //syncPlayerState();
                 }
                 isInFullscreen = false;
             } else {
@@ -264,7 +267,13 @@ class ReactExoplayerView extends FrameLayout implements
         if (playInBackground) {
             return;
         }
-        setPlayWhenReady(false);
+        /**
+        Mentemia change - only pause if this video has gone to the background
+        **/
+        if(!isFullscreen)
+        {
+            setPlayWhenReady(false);
+        }
     }
 
     @Override
@@ -1353,6 +1362,7 @@ class ReactExoplayerView extends FrameLayout implements
     public boolean hasTextTracks(){return textTracks != null && textTracks.size() > 0;}
     public boolean getMutedState(){return this.muted;}
     public boolean getSubtitleState() {return showSubtitles;}
+    public boolean getPausedState() {return isPaused;}
     public void setIsPaused(boolean _isPaused){isPaused = _isPaused;}
 
 

@@ -76,6 +76,14 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
     public void onResume() {
         super.onResume();
         if (ReactExoplayerView.getViewInstance(id) != null) {
+        /**
+        Mentemia change - Play/Pause the video if it has come back from the background
+        **/
+            if(ReactExoplayerView.getViewInstance(id).getFullscreenState() && isInBackground)
+            {
+                player.setPlayWhenReady(!ReactExoplayerView.getViewInstance(id).getPausedState());
+                isInBackground = false;
+            }
             ReactExoplayerView.getViewInstance(id).syncPlayerState();
             ReactExoplayerView.getViewInstance(id).registerFullScreenDelegate(this);
         }
@@ -84,7 +92,14 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
     @Override
     public void onPause() {
         super.onPause();
-        player.setPlayWhenReady(false);
+        /**
+        Mentemia change - only pause if the video is going to background and not when switching to inline. This prevents flickering with the icons
+        **/
+        if(ReactExoplayerView.getViewInstance(id).getFullscreenState())
+        {
+            isInBackground = true;
+            player.setPlayWhenReady(false);
+        }
         if (ReactExoplayerView.getViewInstance(id) != null) {
             ReactExoplayerView.getViewInstance(id).registerFullScreenDelegate(null);
         }
@@ -160,6 +175,7 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
      *
      */
 
+    private boolean isInBackground = false;
     private void initMentemiaControls()
     {
 
