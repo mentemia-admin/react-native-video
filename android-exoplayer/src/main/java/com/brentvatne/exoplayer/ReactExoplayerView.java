@@ -316,9 +316,13 @@ class ReactExoplayerView extends FrameLayout implements
             // Try to get last frame displayed
             player.seekTo(player.getDuration() - 200);
             player.setPlayWhenReady(true);
-        } else {
-            player.setPlayWhenReady(!isPaused);
         }
+        /**
+        Mentemia change - this has been removed to prevent flickering between fullscreen/inline play/pause icons
+        **/
+        /* else {
+            player.setPlayWhenReady(!isPaused);
+        } */
     }
 
     public void registerFullScreenDelegate(FullScreenDelegate delegate) {
