@@ -366,6 +366,8 @@ class ReactExoplayerView extends FrameLayout implements
         playerControlView.show();
         playPauseControlContainer = playerControlView.findViewById(R.id.exo_play_pause_container);
         playerControlView.findViewById(R.id.exo_fullscreen_button).setOnClickListener(v -> setFullscreen(true));
+        playerControlView.setFastForwardIncrementMs(20000);
+        playerControlView.setRewindIncrementMs(20000);
 
         initMentemiaControls();
 
