@@ -366,8 +366,6 @@ class ReactExoplayerView extends FrameLayout implements
         playerControlView.show();
         playPauseControlContainer = playerControlView.findViewById(R.id.exo_play_pause_container);
         playerControlView.findViewById(R.id.exo_fullscreen_button).setOnClickListener(v -> setFullscreen(true));
-        playerControlView.setFastForwardIncrementMs(20000);
-        playerControlView.setRewindIncrementMs(20000);
 
         initMentemiaControls();
 
@@ -1382,6 +1380,8 @@ class ReactExoplayerView extends FrameLayout implements
         playerControlView.findViewById(R.id.subtitle_btn).setOnClickListener(v -> {
             toggleSubtitles();
         });
+        playerControlView.setFastForwardIncrementMs(20000);
+        playerControlView.setRewindIncrementMs(20000);
 
        isPlayingEventListener = new Player.EventListener() {
             @Override
@@ -1399,6 +1399,7 @@ class ReactExoplayerView extends FrameLayout implements
             }
         };
         player.addListener(isPlayingEventListener);
+
     }
 
     public void initSubtitleView()
