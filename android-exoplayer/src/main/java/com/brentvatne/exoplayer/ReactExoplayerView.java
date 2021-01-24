@@ -765,10 +765,13 @@ class ReactExoplayerView extends FrameLayout implements
                 onBuffering(false);
                 startProgressHandler();
                 videoLoaded();
-                // Setting the visibility for the playerControlView
-                if (playerControlView != null) {
-                    playerControlView.show();
-                }
+                /**
+                Mentemia change - Force two clicks on the exoPlayerView to enable controls.
+                For some reason the controls will not show unless this is done.
+                This also fixes the issues where users have to click twice to get the controls to show up
+                **/
+                exoPlayerView.callOnClick();
+                exoPlayerView.callOnClick();
                 setKeepScreenOn(preventsDisplaySleepDuringVideoPlayback);
                 break;
             case Player.STATE_ENDED:
