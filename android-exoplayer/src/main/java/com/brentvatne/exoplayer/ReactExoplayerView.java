@@ -772,6 +772,10 @@ class ReactExoplayerView extends FrameLayout implements
                 **/
                 exoPlayerView.callOnClick();
                 exoPlayerView.callOnClick();
+                if(isPaused)
+                {
+                    playerControlView.setShowTimeoutMs(0);
+                }
                 setKeepScreenOn(preventsDisplaySleepDuringVideoPlayback);
                 break;
             case Player.STATE_ENDED:
