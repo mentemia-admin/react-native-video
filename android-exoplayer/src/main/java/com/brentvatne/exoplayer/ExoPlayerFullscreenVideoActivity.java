@@ -97,6 +97,10 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
         **/
         if(ReactExoplayerView.getViewInstance(id).getFullscreenState())
         {
+            /**
+                Mentemia change - when the video goes into the background, we will change to inline view
+             **/
+            ReactExoplayerView.getViewInstance(id).setFullscreen(false);
             isInBackground = true;
             player.setPlayWhenReady(false);
         }
