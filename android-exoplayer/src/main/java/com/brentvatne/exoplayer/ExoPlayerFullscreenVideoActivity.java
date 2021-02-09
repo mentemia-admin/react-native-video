@@ -25,6 +25,7 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
     private SimpleExoPlayer player;
     private boolean muted;
     private Player.EventListener isPlayingEventListener;
+    private View containerView;
 
 
     @Override
@@ -38,6 +39,8 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         }
         setContentView(R.layout.exo_player_fullscreen_video);
+        containerView = findViewById(R.id.enclosing_layout);
+        containerView.setKeepScreenOn(true);
         player = ReactExoplayerView.getViewInstance(id).getPlayer();
 
         ExoPlayerView playerView = findViewById(R.id.player_view);
@@ -200,10 +203,12 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
                 ReactExoplayerView.getViewInstance(id).setIsPaused(isPlaying);
                 if(isPlaying)
                 {
+                    containerView.setKeepScreenOn(true);
                     playerControlView.setShowTimeoutMs(5000);
                 }
                 else
                 {
+                    containerView.setKeepScreenOn(false);
                     playerControlView.setShowTimeoutMs(0);
                 }
                 playerControlView.show();
