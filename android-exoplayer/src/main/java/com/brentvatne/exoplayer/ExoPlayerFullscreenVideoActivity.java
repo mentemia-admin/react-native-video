@@ -201,6 +201,9 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
             MentemiaControls.toggleMuteControls(playerControlView,ReactExoplayerView.getViewInstance(id).getMutedState());
         });
 
+        playerControlView.setFastForwardIncrementMs(20000);
+        playerControlView.setRewindIncrementMs(20000);
+
         isPlayingEventListener = new Player.EventListener() {
             @Override
             public void onIsPlayingChanged(boolean isPlaying) {
