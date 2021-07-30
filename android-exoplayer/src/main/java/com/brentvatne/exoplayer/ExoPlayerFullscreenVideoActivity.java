@@ -211,11 +211,13 @@ public class ExoPlayerFullscreenVideoActivity extends AppCompatActivity implemen
                 if(isPlaying)
                 {
                     containerView.setKeepScreenOn(true);
+                    ReactExoplayerView.getViewInstance(id).emitPlaybackRateChange(1.0f);
                     playerControlView.setShowTimeoutMs(5000);
                 }
                 else
                 {
                     containerView.setKeepScreenOn(false);
+                    ReactExoplayerView.getViewInstance(id).emitPlaybackRateChange(0.0f);
                     playerControlView.setShowTimeoutMs(0);
                 }
                 playerControlView.show();
