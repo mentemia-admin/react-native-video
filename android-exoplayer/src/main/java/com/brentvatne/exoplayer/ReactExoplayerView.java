@@ -1376,6 +1376,7 @@ class ReactExoplayerView extends FrameLayout implements
     public boolean getFullscreenState() {return isFullscreen;}
     public boolean getPausedState() {return isPaused;}
     public void setIsPaused(boolean _isPaused){isPaused = _isPaused;}
+    private float playbackRate = -1.0f;
 
 
     private void initMentemiaControls()
@@ -1396,10 +1397,12 @@ class ReactExoplayerView extends FrameLayout implements
                 isPaused = isPlaying;
                 if(isPlaying)
                 {
+                    emitPlaybackRateChange(1.0f);
                     playerControlView.setShowTimeoutMs(5000);
                 }
                 else
                 {
+                    emitPlaybackRateChange(0.0f);
                     playerControlView.setShowTimeoutMs(0);
                 }
                 playerControlView.show();
@@ -1407,6 +1410,15 @@ class ReactExoplayerView extends FrameLayout implements
         };
         player.addListener(isPlayingEventListener);
 
+    }
+
+    public void emitPlaybackRateChange(float updatedRate)
+    {
+        if(playbackRate != updatedRate)
+        {
+            playbackRate = updatedRate;
+            eventEmitter.playbackRateChange(updatedRate);
+        }
     }
 
     public void initSubtitleView()
