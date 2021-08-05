@@ -1,8 +1,5 @@
 package com.brentvatne.exoplayer;
 
-import android.content.Context;
-import android.content.ContextWrapper;
-
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.network.CookieJarContainer;
 import com.facebook.react.modules.network.ForwardingCookieHandler;
@@ -13,12 +10,11 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
-import okhttp3.Cookie;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import java.util.Map;
-
 
 public class DataSourceUtil {
 
@@ -72,16 +68,16 @@ public class DataSourceUtil {
                 buildHttpDataSourceFactory(context, bandwidthMeter, requestHeaders));
     }
 
+    /**
+    * Mentemia change - changing from okhttp to try and fix buffering issue
+    **/
     private static HttpDataSource.Factory buildHttpDataSourceFactory(ReactContext context, DefaultBandwidthMeter bandwidthMeter, Map<String, String> requestHeaders) {
-        OkHttpClient client = OkHttpClientProvider.getOkHttpClient();
-        CookieJarContainer container = (CookieJarContainer) client.cookieJar();
-        ForwardingCookieHandler handler = new ForwardingCookieHandler(context);
-        container.setCookieJar(new JavaNetCookieJar(handler));
-        OkHttpDataSourceFactory okHttpDataSourceFactory = new OkHttpDataSourceFactory(client, getUserAgent(context), bandwidthMeter);
+        DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory(getUserAgent(context));
 
         if (requestHeaders != null)
-            okHttpDataSourceFactory.getDefaultRequestProperties().set(requestHeaders);
+            factory.getDefaultRequestProperties().set(requestHeaders);
 
-        return okHttpDataSourceFactory;
+        return factory;
     }
+
 }
