@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, requireNativeComponent, NativeModules, View, Platform, findNodeHandle, Image } from 'react-native';
-import {ImagePropTypes, ViewPropTypes} from 'deprecated-react-native-prop-types';
+import { StyleSheet, requireNativeComponent, NativeModules, View, Image, Platform, findNodeHandle } from 'react-native';
+import { ViewPropTypes, ImagePropTypes } from 'deprecated-react-native-prop-types';
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
 import TextTrackType from './TextTrackType';
 import FilterType from './FilterType';
+import DRMType from './DRMType';
 import VideoResizeMode from './VideoResizeMode.js';
 
 const styles = StyleSheet.create({
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export { TextTrackType, FilterType };
+export { TextTrackType, FilterType, DRMType };
 
 export default class Video extends Component {
 
@@ -233,6 +234,26 @@ export default class Video extends Component {
     }
   };
 
+  _onGetLicense = (event) => {
+    if (this.props.drm && this.props.drm.getLicense instanceof Function) {
+      const data = event.nativeEvent;
+      if (data && data.spcBase64) {
+        const getLicenseOverride = this.props.drm.getLicense(data.spcBase64, data.contentId, data.licenseUrl);
+        const getLicensePromise = Promise.resolve(getLicenseOverride); // Handles both scenarios, getLicenseOverride being a promise and not.
+        getLicensePromise.then((result => {
+          if (result !== undefined) {
+            NativeModules.VideoManager.setLicenseResult(result, findNodeHandle(this._root));
+          } else {
+            NativeModules.VideoManager.setLicenseError && NativeModules.VideoManager.setLicenseError('Empty license result', findNodeHandle(this._root));
+          }
+        })).catch((error) => {
+          NativeModules.VideoManager.setLicenseError && NativeModules.VideoManager.setLicenseError(error, findNodeHandle(this._root));
+        });
+      } else {
+        NativeModules.VideoManager.setLicenseError && NativeModules.VideoManager.setLicenseError("No spc received", findNodeHandle(this._root));
+      }
+    }
+  }
   getViewManagerConfig = viewManagerName => {
     if (!NativeModules.UIManager.getViewManagerConfig) {
       return NativeModules.UIManager[viewManagerName];
@@ -305,6 +326,7 @@ export default class Video extends Component {
       onPlaybackRateChange: this._onPlaybackRateChange,
       onAudioFocusChanged: this._onAudioFocusChanged,
       onAudioBecomingNoisy: this._onAudioBecomingNoisy,
+      onGetLicense: nativeProps.drm && nativeProps.drm.getLicense && this._onGetLicense,
       onPictureInPictureStatusChanged: this._onPictureInPictureStatusChanged,
       onRestoreUserInterfaceForPictureInPictureStop: this._onRestoreUserInterfaceForPictureInPictureStop,
     });
@@ -380,6 +402,16 @@ Video.propTypes = {
     // Opaque type returned by require('./video.mp4')
     PropTypes.number,
   ]),
+  drm: PropTypes.shape({
+    type: PropTypes.oneOf([
+      DRMType.CLEARKEY, DRMType.FAIRPLAY, DRMType.WIDEVINE, DRMType.PLAYREADY
+    ]),
+    licenseServer: PropTypes.string,
+    headers: PropTypes.shape({}),
+    base64Certificate: PropTypes.bool,
+    certificateUrl: PropTypes.string,
+    getLicense: PropTypes.func,
+  }),
   minLoadRetryCount: PropTypes.number,
   maxBitRate: PropTypes.number,
   resizeMode: PropTypes.string,

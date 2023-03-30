@@ -23,11 +23,16 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
-    implementation('com.google.android.exoplayer:exoplayer:2.11.4') {
+    implementation('com.google.android.exoplayer:exoplayer:2.13.3') {
         exclude group: 'com.android.support'
     }
 
@@ -36,10 +41,10 @@ dependencies {
     implementation "androidx.core:core:1.1.0"
     implementation "androidx.media:media:1.1.0"
 
-    implementation('com.google.android.exoplayer:extension-okhttp:2.11.4') {
+    implementation('com.google.android.exoplayer:extension-okhttp:2.13.3') {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
-    implementation 'com.squareup.okhttp3:okhttp:3.14.3'
+    implementation 'com.squareup.okhttp3:okhttp:${OKHTTP_VERSION}'
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"
 
 }
